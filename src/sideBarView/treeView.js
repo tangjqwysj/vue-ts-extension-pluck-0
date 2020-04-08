@@ -25,10 +25,9 @@ class TreeViewProvider {
         }
         else {
             // 点开activitybar，无操作，进入这里
-            const packageJsonPath = path.join(__dirname, FIXED_Folder)
-            console.log('packageJsonPath:' + packageJsonPath)
-            if (this.pathExists(packageJsonPath)) {
-                return Promise.resolve(this.getTreeItemArray(packageJsonPath))
+            const fixedFolderPath = path.join(__dirname, FIXED_Folder)
+            if (this.pathExists(fixedFolderPath)) {
+                return Promise.resolve(this.getTreeItemArray(fixedFolderPath))
             }
             else {
                 vscode.window.showInformationMessage('Workspace has no package.json')
@@ -37,9 +36,9 @@ class TreeViewProvider {
         }
     }
 
-    getTreeItemArray(packageJsonPath) {
+    getTreeItemArray(fileOrDirPath) {
         const toDep = (moduleName) => {
-            const pathMy = path.join(packageJsonPath, moduleName)
+            const pathMy = path.join(fileOrDirPath, moduleName)
             if (this.pathExists(pathMy)) {
                 if (!fs.lstatSync(pathMy).isDirectory()) {
                     return new TreeItemNode(moduleName, vscode.TreeItemCollapsibleState.None, {
@@ -53,10 +52,9 @@ class TreeViewProvider {
                 }
             }
         }
-        if (this.pathExists(packageJsonPath) && fs.lstatSync(packageJsonPath).isDirectory()) {
-            const packageJson = fs.readdirSync(packageJsonPath)
-            const deps = packageJson ? packageJson.map(dep => toDep(dep)) : []
-            return deps
+        if (this.pathExists(fileOrDirPath) && fs.lstatSync(fileOrDirPath).isDirectory()) {
+            const pathStringArray = fs.readdirSync(fileOrDirPath)
+            return pathStringArray ? pathStringArray.map(dep => toDep(dep)) : []
         } else {
             return []
         }
@@ -79,8 +77,8 @@ class TreeItemNode extends vscode.TreeItem {
         super(label, collapsibleState)
         this.label = label
         this.collapsibleState = collapsibleState
+        // this.collapsibleState为Collapsed时才会走有element的条件语句
         this.command = command
-
         this.iconPath = {
             light: path.join(__filename, '..', 'resources', 'light', 'dependency.svg'),
             dark: path.join(__filename, '..', 'resources', 'dark', 'dependency.svg')
