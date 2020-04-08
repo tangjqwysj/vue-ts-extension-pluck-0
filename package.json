@@ -17,24 +17,24 @@
 		"viewsContainers": {
 			"activitybar": [
 				{
-					"id": "package-explorer",
-					"title": "Package Explorer",
+					"id": "treeView-explorer",
+					"title": "huaweiyun",
 					"icon": "src/sideBarView/media/dep.svg"
 				}
 			]
 		},
 		"views": {
-			"package-explorer": [
+			"treeView-explorer": [
 				{
-					"id": "nodeDependencies",
-					"name": "Node Dependencies"
+					"id": "treeView",
+					"name": "function compute"
 				}
 			]
 		},
 		"commands": [
 			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
+				"command": "extension.showFileContent",
+				"title": "Show File Content"
 			}
 		]
 	},

@@ -1,7 +1,7 @@
 'use strict'
 Object.defineProperty(exports, "__esModule", { value: true })
 const vscode = require("vscode")
-const nodeDependencies_1 = require("./sideBarView/nodeDependencies")
+const treeView = require("./sideBarView/treeView")
 
 
 /**
@@ -9,19 +9,13 @@ const nodeDependencies_1 = require("./sideBarView/nodeDependencies")
  */
 function activate(context) {
 
-	const nodeDependenciesProvider = new nodeDependencies_1.DepNodeProvider(vscode.workspace.rootPath)
-	vscode.window.registerTreeDataProvider('nodeDependencies', nodeDependenciesProvider)
+	vscode.window.registerTreeDataProvider('treeView', new treeView.TreeViewProvider(vscode.workspace.rootPath))
 
 
-	let disposable = vscode.commands.registerCommand('extension.helloWorld', function (doc) {
-		console.log(doc)
-
-		vscode.window.showTextDocument(vscode.Uri.file(doc), { preview: false }).then(() => {
-			vscode.window.showInformationMessage('doc:' + doc)
+	context.subscriptions.push(vscode.commands.registerCommand('extension.showFileContent', function (path) {
+		vscode.window.showTextDocument(vscode.Uri.file(path), { preview: false }).then(() => {
 		})
-	})
-
-	context.subscriptions.push(disposable)
+	}))
 
 }
 exports.activate = activate
