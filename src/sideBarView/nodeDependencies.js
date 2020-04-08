@@ -16,10 +16,7 @@ class DepNodeProvider {
         return element
     }
     getChildren(element) {
-        // if (!this.workspaceRoot) {
-        //     vscode.window.showInformationMessage('No dependency in empty workspace');
-        //     return Promise.resolve([]);
-        // }
+        
         if (element) {
             // console.log('element:' + JSON.stringify(element, null, 4))
             // return Promise.resolve(this.getDepsInPackageJson(path.join(__dirname, 'dudu', element.label)))
@@ -37,17 +34,11 @@ class DepNodeProvider {
             }
         }
     }
-    /**
-     * Given the path to package.json, read all its dependencies and devDependencies.
-     */
+    
     getDepsInPackageJson(packageJsonPath) {
         const toDep = (moduleName) => {
             const pathMy = path.join(__dirname, 'dudu', moduleName)
-            // if (this.pathExists(pathMy)&& fs.lstatSync(packageJsonPath).isDirectory()) {
-            //     // const docm=fs.readFileSync(pathMy, 'utf-8')
-            //     // // console.log('docm:'+docm)
-            //     return new Dependency(moduleName, vscode.TreeItemCollapsibleState.Collapsed)
-            // }
+           
             if (this.pathExists(pathMy) && !fs.lstatSync(pathMy).isDirectory()) {
                 const docm = fs.readFileSync(pathMy, 'utf-8')
                 console.log('docm:'+docm)
@@ -68,9 +59,7 @@ class DepNodeProvider {
             const packageJson = fs.readdirSync(packageJsonPath)
             // console.log('packageJson：' + packageJson)
             const deps = packageJson ? packageJson.map(dep => toDep(dep)) : []
-            // const devDeps = packageJson.devDependencies
-            //     ? Object.keys(packageJson.devDependencies).map(dep => toDep(dep, packageJson.devDependencies[dep]))
-            //     : [];
+          
             return deps
         } else {
             return []
@@ -102,12 +91,7 @@ class Dependency extends vscode.TreeItem {
         }
         // this.contextValue = 'dependency'
     }
-    // get tooltip() {
-    //     return `${this.label}-${this.version}`
-    // }
-    // get description() {
-    //     return this.version
-    // }
+   
 }
 exports.Dependency = Dependency
 //# sourceMappingURL=nodeDependencies.js.map
