@@ -21,7 +21,25 @@ class TreeViewProvider {
     getChildren(element) {
         if (element) {
             console.log('element:' + JSON.stringify(element, null, 2))
-            return Promise.resolve(this.getTreeItemArray(path.join(__dirname, FIXED_Folder, element.label)))
+            const getDirPath = (path, elLabel) => {
+                var dirList = fs.readdirSync(path)
+                for (var i = 0;i < dirList.length;i++) {
+                    var item = dirList[i]
+                    if (fs.statSync(path + '/' + item).isDirectory()) {
+                        if (item == elLabel) {
+                            return path + '/' + item
+                        } else {
+                            var j = getDirPath(path + '/' + item, elLabel)
+                            if (j) {
+                                return j
+                            } else {
+                                continue
+                            }
+                        }
+                    }
+                }
+            }
+            return Promise.resolve(this.getTreeItemArray(getDirPath(path.join(__dirname, FIXED_Folder), element.label)))
         }
         else {
             // 点开activitybar，无操作，进入这里
@@ -30,7 +48,7 @@ class TreeViewProvider {
                 return Promise.resolve(this.getTreeItemArray(fixedFolderPath))
             }
             else {
-                vscode.window.showInformationMessage('Workspace has no package.json')
+                vscode.window.showInformationMessage('There is no such path')
                 return Promise.resolve([])
             }
         }
@@ -80,8 +98,8 @@ class TreeItemNode extends vscode.TreeItem {
         // this.collapsibleState为Collapsed时才会走有element的条件语句
         this.command = command
         this.iconPath = {
-            light: path.join(__filename, '..', 'resources', 'light', 'dependency.svg'),
-            dark: path.join(__filename, '..', 'resources', 'dark', 'dependency.svg')
+            light: path.join(__filename, '..', 'resources', 'light', path.extname(this.label) ? '' : 'dependency.svg'),
+            dark: path.join(__filename, '..', 'resources', 'dark', path.extname(this.label) ? '' : 'dependency.svg')
         }
     }
 }

@@ -1,5 +1,5 @@
-const url='http://www.duduchifan.com'
+const url = 'http://www.duduchifan.com'
 
-module.exports={
+module.exports = {
   url
 }

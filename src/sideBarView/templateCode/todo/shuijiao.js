@@ -1,6 +1,6 @@
-const url='http://www.dudushuijiao.com'
-const test='test'
+const url = 'http://www.dudushuijiao.com'
+const test = 'test'
 
-module.exports={
+module.exports = {
   url
 }
