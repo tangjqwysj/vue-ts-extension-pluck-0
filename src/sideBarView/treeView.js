@@ -39,7 +39,11 @@ class TreeViewProvider {
                     }
                 }
             }
-            return Promise.resolve(this.getTreeItemArray(getDirPath(path.join(__dirname, FIXED_Folder), element.label)))
+            if (this.pathExists(path.join(__dirname, FIXED_Folder, element.label))) {
+                return Promise.resolve(this.getTreeItemArray(path.join(__dirname, FIXED_Folder, element.label)))
+            } else {
+                return Promise.resolve(this.getTreeItemArray(getDirPath(path.join(__dirname, FIXED_Folder), element.label)))
+            }
         }
         else {
             // 点开activitybar，无操作，进入这里
