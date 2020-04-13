@@ -102,8 +102,18 @@ class TreeItemNode extends vscode.TreeItem {
         // this.collapsibleState为Collapsed时才会走有element的条件语句
         this.command = command
         this.iconPath = {
-            light: path.join(__filename, '..', 'resources', 'light', path.extname(this.label) ? '' : 'dependency.svg'),
-            dark: path.join(__filename, '..', 'resources', 'dark', path.extname(this.label) ? '' : 'dependency.svg')
+            light: path.join(__filename, '..', 'resources', 'light', this.getFileType(this.label)),
+            dark: path.join(__filename, '..', 'resources', 'dark', this.getFileType(this.label))
+        }
+    }
+    getFileType(fileName) {
+        const ext = path.extname(fileName)
+        if (ext === '.js') {
+            return 'edit.svg'
+        } else if (ext === '.json') {
+            return 'number.svg'
+        } else {
+            return 'dependency.svg'
         }
     }
 }
