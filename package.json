@@ -18,7 +18,7 @@
 			"activitybar": [
 				{
 					"id": "treeView-explorer",
-					"title": "huaweiyun",
+					"title": "HUAWEIYUN: FUNCTION COMPUTE",
 					"icon": "src/sideBarView/media/dep.svg"
 				}
 			]
@@ -27,7 +27,30 @@
 			"treeView-explorer": [
 				{
 					"id": "treeView",
-					"name": "function compute"
+					"name": "Local Resources"
+				},
+				{
+					"id": "fcRemoteResource",
+					"name": "Remote Resources"
+				}
+			]
+		},
+		"menus": {
+			"commandPalette": [
+				{
+					"command": "extension.addJsFile"
+				}
+			],
+			"view/title": [
+				{
+					"command": "extension.refreshEntry",
+					"when": "view == treeView",
+					"group": "navigation"
+				},
+				{
+					"command": "extension.addJsFile",
+					"when": "view == treeView",
+					"group": "navigation"
 				}
 			]
 		},
@@ -35,6 +58,22 @@
 			{
 				"command": "extension.showFileContent",
 				"title": "Show File Content"
+			},
+			{
+				"command": "extension.addJsFile",
+				"title": "Add Js File",
+				"icon": {
+					"light": "src/sideBarView/resources/light/plus.svg",
+					"dark": "src/sideBarView/resources/dark/plus.svg"
+				}
+			},
+			{
+				"command": "extension.refreshEntry",
+				"title": "Refresh",
+				"icon": {
+					"light": "src/sideBarView/resources/light/refresh.svg",
+					"dark": "src/sideBarView/resources/dark/refresh.svg"
+				}
 			}
 		]
 	},
@@ -53,5 +92,8 @@
 		"mocha": "^7.0.1",
 		"typescript": "^3.7.5",
 		"vscode-test": "^1.3.0"
+	},
+	"dependencies": {
+		"mkdirp": "0.5.1"
 	}
 }

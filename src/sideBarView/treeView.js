@@ -14,13 +14,17 @@ class TreeViewProvider {
         this.onDidChangeTreeData = this._onDidChangeTreeData.event
     }
 
+    refresh() {
+        this._onDidChangeTreeData.fire();
+    }
+
     getTreeItem(element) {
         return element
     }
 
     getChildren(element) {
         if (element) {
-            console.log('element:' + JSON.stringify(element, null, 2))
+            // console.log('element:' + JSON.stringify(element, null, 2))
             const getDirPath = (path, elLabel) => {
                 var dirList = fs.readdirSync(path)
                 for (var i = 0;i < dirList.length;i++) {
@@ -70,7 +74,7 @@ class TreeViewProvider {
                         ]
                     })
                 } else {
-                    return new TreeItemNode(moduleName, vscode.TreeItemCollapsibleState.Collapsed)
+                    return new TreeItemNode(moduleName, vscode.TreeItemCollapsibleState.Expanded)
                 }
             }
         }
