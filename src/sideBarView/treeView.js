@@ -15,7 +15,7 @@ class TreeViewProvider {
     }
 
     refresh() {
-        this._onDidChangeTreeData.fire();
+        this._onDidChangeTreeData.fire()
     }
 
     getTreeItem(element) {
@@ -116,6 +116,8 @@ class TreeItemNode extends vscode.TreeItem {
             return 'edit.svg'
         } else if (ext === '.json') {
             return 'number.svg'
+        } else if (this.collapsibleState == vscode.TreeItemCollapsibleState.None) {
+            return 'string.svg'
         } else {
             return 'dependency.svg'
         }

@@ -5,7 +5,7 @@ const vscode = require("vscode")
 const path = require("path")
 const FileManager_1 = require("./FileManager")
 const Fuzzy_1 = require("./Fuzzy")
-const treeViewProvider=require('./extension')
+const treeViewProvider = require('./extension')
 class QuickPick {
     constructor(base) {
         this.fm = new FileManager_1.default(base)
@@ -101,9 +101,9 @@ class QuickPick {
         }
     }
     async show() {
-        const defaultPath = this.config.get('defaultPath')
+        // const defaultPath = this.config.get('defaultPath')
         this.quickPick.show()
-        this.changePath(defaultPath)
+        this.changePath('/')
     }
     async setItems(pPath) {
         const directory = path.relative(this.fm.getUri().fsPath, pPath)
@@ -111,7 +111,8 @@ class QuickPick {
         let content = []
         try {
             content = await this.fm.getContent(directory)
-            if (pPath.substr(-4) !== 'todo') {
+            console.log(pPath)
+            if (!pPath.match(/^.*todo[\\//\/]*$/)) {
                 content.push(['..', vscode.FileType.Directory])
             }
         }
