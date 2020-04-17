@@ -5,7 +5,7 @@ const fs = require("fs")
 const path = require("path")
 
 // 固定文件夹
-const FIXED_Folder = 'templateCode'
+const FIXED_Folder = 'userCode'
 
 class TreeViewProvider {
     constructor(workspaceRoot) {
@@ -23,31 +23,9 @@ class TreeViewProvider {
     }
 
     getChildren(element) {
+        // console.log(element)
         if (element) {
-            // console.log('element:' + JSON.stringify(element, null, 2))
-            const getDirPath = (path, elLabel) => {
-                var dirList = fs.readdirSync(path)
-                for (var i = 0;i < dirList.length;i++) {
-                    var item = dirList[i]
-                    if (fs.statSync(path + '/' + item).isDirectory()) {
-                        if (item == elLabel) {
-                            return path + '/' + item
-                        } else {
-                            var j = getDirPath(path + '/' + item, elLabel)
-                            if (j) {
-                                return j
-                            } else {
-                                continue
-                            }
-                        }
-                    }
-                }
-            }
-            if (this.pathExists(path.join(__dirname, FIXED_Folder, element.label))) {
-                return Promise.resolve(this.getTreeItemArray(path.join(__dirname, FIXED_Folder, element.label)))
-            } else {
-                return Promise.resolve(this.getTreeItemArray(getDirPath(path.join(__dirname, FIXED_Folder), element.label)))
-            }
+            return Promise.resolve(this.getTreeItemArray(element.des))
         }
         else {
             // 点开activitybar，无操作，进入这里
@@ -62,24 +40,30 @@ class TreeViewProvider {
         }
     }
 
-    getTreeItemArray(fileOrDirPath) {
+    getTreeItemArray(dirPath) {
         const toDep = (moduleName) => {
-            const pathMy = path.join(fileOrDirPath, moduleName)
+            const pathMy = path.join(dirPath, moduleName)
             if (this.pathExists(pathMy)) {
                 if (!fs.lstatSync(pathMy).isDirectory()) {
-                    return new TreeItemNode(moduleName, vscode.TreeItemCollapsibleState.None, {
+                    return new TreeItemNode(moduleName, vscode.TreeItemCollapsibleState.None, pathMy, 'fileType', {
                         command: 'extension.showFileContent',
                         arguments: [
                             pathMy
                         ]
                     })
                 } else {
-                    return new TreeItemNode(moduleName, vscode.TreeItemCollapsibleState.Expanded)
+                    // console.log('pathMy:'+JSON.stringify(pathMy,null,2))
+                    return new TreeItemNode(moduleName, vscode.TreeItemCollapsibleState.Collapsed, pathMy, 'dirType',{
+                        command:'extension.addFile',
+                        arguments:[
+                            pathMy
+                        ]
+                    })
                 }
             }
         }
-        if (this.pathExists(fileOrDirPath) && fs.lstatSync(fileOrDirPath).isDirectory()) {
-            const pathStringArray = fs.readdirSync(fileOrDirPath)
+        if (this.pathExists(dirPath) && fs.lstatSync(dirPath).isDirectory()) {
+            const pathStringArray = fs.readdirSync(dirPath)
             return pathStringArray ? pathStringArray.map(dep => toDep(dep)) : []
         } else {
             return []
@@ -99,10 +83,12 @@ class TreeViewProvider {
 exports.TreeViewProvider = TreeViewProvider
 
 class TreeItemNode extends vscode.TreeItem {
-    constructor(label, collapsibleState, command) {
+    constructor(label, collapsibleState, des, contextValue, command) {
         super(label, collapsibleState)
         this.label = label
         this.collapsibleState = collapsibleState
+        this.des = des
+        this.contextValue = contextValue
         // this.collapsibleState为Collapsed时才会走有element的条件语句
         this.command = command
         this.iconPath = {

@@ -38,7 +38,10 @@
 		"menus": {
 			"commandPalette": [
 				{
-					"command": "extension.addJsFile"
+					"command": "extension.addOriginDir"
+				},
+				{
+					"command": "extension.addFile"
 				}
 			],
 			"view/title": [
@@ -48,10 +51,17 @@
 					"group": "navigation"
 				},
 				{
-					"command": "extension.addJsFile",
+					"command": "extension.addOriginDir",
 					"when": "view == treeView",
 					"group": "navigation"
 				}
+			],
+			"view/item/context": [
+				{
+					"command": "extension.addFile",
+					"when": "view == treeView && viewItem == dirType",
+					"group": "inline"
+				} 
 			]
 		},
 		"commands": [
@@ -60,8 +70,16 @@
 				"title": "Show File Content"
 			},
 			{
-				"command": "extension.addJsFile",
-				"title": "Add Js File",
+				"command": "extension.addFile",
+				"title": "Add File",
+				"icon": {
+					"light": "src/sideBarView/resources/light/plus.svg",
+					"dark": "src/sideBarView/resources/dark/plus.svg"
+				}
+			},
+			{
+				"command": "extension.addOriginDir",
+				"title": "Add Initial File",
 				"icon": {
 					"light": "src/sideBarView/resources/light/plus.svg",
 					"dark": "src/sideBarView/resources/dark/plus.svg"

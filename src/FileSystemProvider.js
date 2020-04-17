@@ -93,6 +93,62 @@ class FileSystemProvider {
         }
         return _rename(oldUri.fsPath, newUri.fsPath)
     }
+    copy(from, to) {
+        const fromPath = path.resolve(from)
+        let toPath = to
+        // if (path.extname(toPath) || !toPath.match(/^[^.]*$/)) {
+        if (path.extname(toPath) && toPath.match(/^.*[^\/\\]+$/)) {
+            vscode.window.showInformationMessage('请输入正确的目录结构')
+            return Promise.reject('请输入正确的目录结构')
+        }
+        toPath = path.resolve(toPath)
+        function pathExists(p) {
+            try {
+                fs.accessSync(p)
+            }
+            catch (err) {
+                return false
+            }
+            return true
+        }
+        function mkdirsSync(dirname) {
+            if (pathExists(dirname)) {
+                return true
+            } else {
+                if (mkdirsSync(path.dirname(dirname))) {
+                    fs.mkdirSync(dirname)
+                    return true
+                }
+            }
+        }
+        mkdirsSync(toPath)
+
+        fs.readdir(fromPath, function (err, paths) {
+            if (err) {
+                console.log(err)
+                return
+            }
+            paths.forEach(function (item) {
+                const newFromPath = fromPath + '/' + item
+                const newToPath = path.resolve(toPath + '/' + item)
+
+                fs.stat(newFromPath, function (err, stat) {
+                    if (err) return
+                    if (stat.isFile()) {
+                        fs.copyFile(newFromPath, newToPath, function (err) {
+                            if (err) {
+                                console.log('err:' + err)
+                                return
+                            }
+                        })
+                    }
+                    if (stat.isDirectory()) {
+                        this.copy(newFromPath, newToPath)
+                    }
+                })
+            })
+        })
+    }
 }
 exports.default = FileSystemProvider
 function deactivate() { }

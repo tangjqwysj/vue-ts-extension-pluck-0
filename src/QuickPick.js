@@ -33,8 +33,8 @@ class QuickPick {
         const newPath = path.normalize(path.dirname(this.fm.getUri(input).fsPath + '__gibberish__'))
         if (newPath !== this.oldPath) {
             if (input) {
-                const regex = new RegExp(`^(.\\${path.sep})`)
-                this.quickPick.value = path.normalize(input).replace(regex, '')
+                // const regex = new RegExp(`^(.\\${path.sep})`)
+                // this.quickPick.value = path.normalize(input).replace(regex, '')
             }
             await this.setItems(newPath)
         }
@@ -103,7 +103,7 @@ class QuickPick {
     async show() {
         // const defaultPath = this.config.get('defaultPath')
         this.quickPick.show()
-        this.changePath('/')
+        // this.changePath('/')
     }
     async setItems(pPath) {
         const directory = path.relative(this.fm.getUri().fsPath, pPath)
@@ -111,10 +111,10 @@ class QuickPick {
         let content = []
         try {
             content = await this.fm.getContent(directory)
-            console.log(pPath)
-            if (!pPath.match(/^.*todo[\\//\/]*$/)) {
-                content.push(['..', vscode.FileType.Directory])
-            }
+            // console.log(pPath)
+            // if (!pPath.match(/^.*todo[\\//\/]*$/)) {
+            //     content.push(['..', vscode.FileType.Directory])
+            // }
         }
         catch (e) {
             // Isn't there some better method for checking of which type the error is?
