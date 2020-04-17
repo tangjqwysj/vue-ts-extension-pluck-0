@@ -5,9 +5,12 @@ Object.defineProperty(exports, "__esModule", { value: true })
 const vscode = require("vscode")
 const treeView = require("./sideBarView/treeView")
 
-const QuickPick_1 = require("./QuickPick")
-const QuickPick_2 = require('./QuickPick2')
+const QuickPick_1 = require("./sideBarView/QuickPick")
+const QuickPick_2 = require('./sideBarView/QuickPick2')
 const path = require("path")
+
+const FileManager_1 = require("./sideBarView/FileManager")
+
 
 
 async function getBasePath(mPath) {
@@ -33,15 +36,47 @@ function activate(context) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('extension.showFileContent', function (path) {
 		// console.log('path:' + JSON.stringify(path, null, 2))
-		vscode.window.showTextDocument(vscode.Uri.file(path), { preview: false }).then(() => { }, (error) => {
+		vscode.window.showTextDocument(vscode.Uri.file(path)).then(() => { }, (error) => {
 			vscode.window.showWarningMessage(error.message)
 		})
 	}))
 
-	let disposable = vscode.commands.registerCommand('extension.addFile', async (path) => {
+	context.subscriptions.push(vscode.commands.registerCommand('extension.deleteFile', async function (ele) {
+		console.log('path:' + JSON.stringify(ele, null, 2))
+		const base = await getBasePath(ele.des)
+		const fm = new FileManager_1.default(base)
+
+		vscode.window.showInformationMessage(`是否确定要删除文件"${ele.label}"`, '移动到回收站', '取消')
+			.then(async function (select) {
+				if (select === '移动到回收站') {
+					await fm.delete(base.path, { recursive: false })
+					treeViewProvider.refresh()
+				} else {
+					console.log(select)
+				}
+			})
+	}))
+
+	context.subscriptions.push(vscode.commands.registerCommand('extension.deleteDir', async function (ele) {
+		console.log('path:' + JSON.stringify(ele, null, 2))
+		const base = await getBasePath(ele.des)
+		const fm = new FileManager_1.default(base)
+
+		vscode.window.showInformationMessage(`是否确定要删除目录"${ele.label}"`, '移动到回收站', '取消')
+			.then(async function (select) {
+				if (select === '移动到回收站') {
+					await fm.delete(base.path, { recursive: true })
+					treeViewProvider.refresh()
+				} else {
+					console.log(select)
+				}
+			})
+	}))
+
+	let disposable = vscode.commands.registerCommand('extension.addFile', async (ele) => {
 		// console.log('mPath:' + JSON.stringify(path, null, 2))
 		// 这里有点诡异，传出来的居然是element对象
-		const base = await getBasePath(path.des)
+		const base = await getBasePath(ele.des)
 		if (!base) {
 			return
 		}

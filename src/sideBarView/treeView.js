@@ -53,9 +53,9 @@ class TreeViewProvider {
                     })
                 } else {
                     // console.log('pathMy:'+JSON.stringify(pathMy,null,2))
-                    return new TreeItemNode(moduleName, vscode.TreeItemCollapsibleState.Collapsed, pathMy, 'dirType',{
-                        command:'extension.addFile',
-                        arguments:[
+                    return new TreeItemNode(moduleName, vscode.TreeItemCollapsibleState.Expanded, pathMy, 'dirType', {
+                        command: 'extension.addFile',
+                        arguments: [
                             pathMy
                         ]
                     })
@@ -98,14 +98,14 @@ class TreeItemNode extends vscode.TreeItem {
     }
     getFileType(fileName) {
         const ext = path.extname(fileName)
-        if (ext === '.js') {
+        if (this.collapsibleState !== vscode.TreeItemCollapsibleState.None) {
+            return 'folder.svg'
+        } else if (ext === '.js') {
             return 'edit.svg'
         } else if (ext === '.json') {
             return 'number.svg'
-        } else if (this.collapsibleState == vscode.TreeItemCollapsibleState.None) {
-            return 'string.svg'
         } else {
-            return 'dependency.svg'
+            return 'string.svg'
         }
     }
 }
