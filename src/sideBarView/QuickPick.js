@@ -6,6 +6,7 @@ const path = require("path")
 const FileManager_1 = require("./FileManager")
 const Fuzzy_1 = require("./Fuzzy")
 const treeViewProvider = require('../extension')
+
 class QuickPick {
     constructor(base) {
         this.fm = new FileManager_1.default(base)
@@ -114,10 +115,6 @@ class QuickPick {
         let content = []
         try {
             content = await this.fm.getContent(directory)
-            // console.log(pPath)
-            // if (!pPath.match(/^.*todo[\\//\/]*$/)) {
-            //     content.push(['..', vscode.FileType.Directory])
-            // }
         }
         catch (e) {
             // Isn't there some better method for checking of which type the error is?

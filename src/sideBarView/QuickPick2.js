@@ -89,11 +89,6 @@ class QuickPick {
   }
   async createNew() {
     const filePath = this.quickPick.value
-    // console.log(filePath)
-    // if(!filePath.match(/^[^\\//\/.]*$/)){
-    //   vscode.window.showInformationMessage('请输入正确的目录名')
-    //   return undefined
-    // }
     const uri = this.fm.getUri(filePath)
 
     try {
@@ -116,10 +111,6 @@ class QuickPick {
     let content = []
     try {
       content = await this.fm.getContent(directory)
-      // console.log(pPath)
-      // if (!pPath.match(/^.*todo[\\//\/]*$/)) {
-      //     content.push(['..', vscode.FileType.Directory])
-      // }
     }
     catch (e) {
       // Isn't there some better method for checking of which type the error is?
