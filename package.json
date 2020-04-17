@@ -63,12 +63,8 @@
 					"group": "inline"
 				},
 				{
-					"command": "extension.deleteFile",
-					"when": "view == treeView && viewItem == fileType"
-				},
-				{
-					"command": "extension.deleteDir",
-					"when": "view == treeView && viewItem == dirType"
+					"command": "extension.delete",
+					"when": "view == treeView && viewItem == fileType||viewItem == dirType"
 				}
 			]
 		},
@@ -78,11 +74,7 @@
 				"title": "Show File Content"
 			},
 			{
-				"command": "extension.deleteFile",
-				"title": "Delete"
-			},
-			{
-				"command": "extension.deleteDir",
+				"command": "extension.delete",
 				"title": "Delete"
 			},
 			{
