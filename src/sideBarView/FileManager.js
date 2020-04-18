@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true })
 const vscode = require("vscode")
 const path = require("path")
-const FileSystemProvider_1 = require("./FileSystemProvider")
+const FileSystemProvider = require("./FileSystemProvider")
 
-class FileManager extends FileSystemProvider_1.default {
+class FileManager extends FileSystemProvider.default {
     constructor(base) {
         super()
         if (base.type === 'file') {

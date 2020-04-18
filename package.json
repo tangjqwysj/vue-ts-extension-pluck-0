@@ -65,6 +65,10 @@
 				{
 					"command": "extension.delete",
 					"when": "view == treeView && viewItem == fileType||viewItem == dirType"
+				},
+				{
+					"command": "extension.rename",
+					"when": "view == treeView && viewItem == fileType||viewItem == dirType"
 				}
 			]
 		},
@@ -76,6 +80,10 @@
 			{
 				"command": "extension.delete",
 				"title": "Delete"
+			},
+			{
+				"command": "extension.rename",
+				"title": "Rename"
 			},
 			{
 				"command": "extension.addFile",

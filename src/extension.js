@@ -9,7 +9,7 @@ const QuickPick_1 = require("./sideBarView/QuickPick")
 const QuickPick_2 = require('./sideBarView/QuickPick2')
 const path = require("path")
 
-const FileManager_1 = require("./sideBarView/FileManager")
+const FileManager = require("./sideBarView/FileManager")
 
 const fs = require('fs')
 
@@ -37,18 +37,17 @@ function activate(context) {
 
 
 	context.subscriptions.push(vscode.commands.registerCommand('extension.showFileContent', function (path) {
-		// console.log('path:' + JSON.stringify(path, null, 2))
 		vscode.window.showTextDocument(vscode.Uri.file(path)).then(() => { }, (error) => {
 			vscode.window.showWarningMessage(error.message)
 		})
 	}))
 
 	context.subscriptions.push(vscode.commands.registerCommand('extension.delete', async function (ele) {
-		console.log('path:' + JSON.stringify(ele, null, 2))
+		// console.log('path:' + JSON.stringify(ele, null, 2))
 		const base = await getBasePath(ele.des)
-		const fm = new FileManager_1.default(base)
+		const fm = new FileManager.default(base)
 		const isDir = fs.lstatSync(ele.des).isDirectory()
-		const str=isDir?'文件夹':'文件'
+		const str = isDir ? '文件夹' : '文件'
 
 		vscode.window.showInformationMessage(`是否确定要删除${str}"${ele.label}"`, '移动到回收站', '取消')
 			.then(async function (select) {
@@ -64,6 +63,26 @@ function activate(context) {
 				}
 			})
 	}))
+
+	context.subscriptions.push(vscode.commands.registerCommand('extension.rename', async function (ele) {
+		// console.log('path:' + JSON.stringify(ele, null, 2))
+		const base = await getBasePath(ele.des)
+		const fm = new FileManager.default(base)
+		const dirname = path.dirname(ele.des)
+
+		vscode.window.showInputBox(
+			{
+				password: false,
+				ignoreFocusOut: true,
+				placeHolder: '随便输',
+				prompt: '输入',
+			}).then(async function (msg) {
+				const base_t = await getBasePath(path.join(dirname, msg))
+				await fm.rename(base.path, base_t.path, { overwrite: false })
+				treeViewProvider.refresh()
+			})
+	}))
+
 
 	context.subscriptions.push(vscode.commands.registerCommand('extension.addFile', async (ele) => {
 		// console.log('mPath:' + JSON.stringify(path, null, 2))

@@ -3,13 +3,13 @@
 Object.defineProperty(exports, "__esModule", { value: true })
 const vscode = require("vscode")
 const path = require("path")
-const FileManager_1 = require("./FileManager")
+const FileManager = require("./FileManager")
 const Fuzzy_1 = require("./Fuzzy")
 const treeViewProvider = require('../extension')
 
 class QuickPick {
   constructor(base) {
-    this.fm = new FileManager_1.default(base)
+    this.fm = new FileManager.default(base)
     this.oldPath = null
     this.config = vscode.workspace.getConfiguration('simple-new-file')
     this.items = []
@@ -34,10 +34,6 @@ class QuickPick {
     // does omit the directory seperator at the end. We don't want that.
     const newPath = path.normalize(path.dirname(this.fm.getUri(input).fsPath + '__gibberish__'))
     if (newPath !== this.oldPath) {
-      if (input) {
-        // const regex = new RegExp(`^(.\\${path.sep})`)
-        // this.quickPick.value = path.normalize(input).replace(regex, '')
-      }
       await this.setItems(newPath)
     }
     this.filterItems(input)

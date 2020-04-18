@@ -6,7 +6,7 @@ const fs = require("fs")
 const path = require("path")
 const mkdirp = require("mkdirp")
 const rimraf = require('rimraf')
-const FileStat_1 = require("./FileStat")
+const FileStat = require("./FileStat")
 
 class FileSystemProvider {
     constructor() {
@@ -30,7 +30,7 @@ class FileSystemProvider {
         return this._stat(uri.fsPath)
     }
     async _stat(path) {
-        return new FileStat_1.default(await _stat(path))
+        return new FileStat.default(await _stat(path))
     }
     readDirectory(uri) {
         return this._readDirectory(uri)
@@ -82,6 +82,7 @@ class FileSystemProvider {
         const exists = await _exists(newUri.fsPath)
         if (exists) {
             if (!options.overwrite) {
+                vscode.window.showWarningMessage('指定的文件名称与同级文件重名。请指定其他名称。')
                 throw vscode.FileSystemError.FileExists()
             }
             else {
@@ -170,7 +171,7 @@ function massageError(error) {
         return vscode.FileSystemError.FileIsADirectory()
     }
     if (error.code === 'EEXIST') {
-        vscode.window.showWarningMessage('指定的文件夹名称与已存在的文件名重名。请指定其他名称。')
+        vscode.window.showWarningMessage('指定的文件夹名称与同级文件重名。请指定其他名称。')
         return vscode.FileSystemError.FileExists()
     }
     if (error.code === 'EPERM' || error.code === 'EACCESS') {
