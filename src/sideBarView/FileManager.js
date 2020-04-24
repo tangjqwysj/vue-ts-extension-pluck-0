@@ -27,7 +27,7 @@ class FileManager extends FileSystemProvider.default {
     }
     openFile(path) {
         const uri = this.getUri(path)
-        vscode.window.showTextDocument(uri).then(() => { }, (error) => {
+        vscode.window.showTextDocument(uri, { preview: false }).then(() => { }, (error) => {
             vscode.window.showWarningMessage(error.message)
         })
     }

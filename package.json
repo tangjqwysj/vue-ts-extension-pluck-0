@@ -30,7 +30,7 @@
 					"name": "Local Resources"
 				},
 				{
-					"id": "fcRemoteResource",
+					"id": "remoteResource",
 					"name": "Remote Resources"
 				}
 			]
@@ -63,6 +63,11 @@
 					"group": "inline"
 				},
 				{
+					"command": "extension.idDeploy",
+					"when": "view == treeView && viewItem == dirType",
+					"group": "inline"
+				},
+				{
 					"command": "extension.delete",
 					"when": "view == treeView && viewItem == fileType||viewItem == dirType"
 				},
@@ -70,12 +75,22 @@
 					"command": "extension.rename",
 					"when": "view == treeView && viewItem == fileType||viewItem == dirType"
 				}
+			],
+			"editor/title": [
+				{
+					"command": "extension.searchApi",
+					"group": "navigation"
+				}
 			]
 		},
 		"commands": [
 			{
 				"command": "extension.showFileContent",
 				"title": "Show File Content"
+			},
+			{
+				"command": "extension.showRemoteFileContent",
+				"title": "Show Remote File Content"
 			},
 			{
 				"command": "extension.delete",
@@ -94,6 +109,14 @@
 				}
 			},
 			{
+				"command": "extension.idDeploy",
+				"title": "Deploy File",
+				"icon": {
+					"light": "src/sideBarView/resources/light/deploy.svg",
+					"dark": "src/sideBarView/resources/dark/deploy.svg"
+				}
+			},
+			{
 				"command": "extension.addOriginDir",
 				"title": "Add Initial File",
 				"icon": {
@@ -107,6 +130,14 @@
 				"icon": {
 					"light": "src/sideBarView/resources/light/refresh.svg",
 					"dark": "src/sideBarView/resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "extension.searchApi",
+				"title": "Refresh",
+				"icon": {
+					"light": "src/sideBarView/resources/light/boolean.svg",
+					"dark": "src/sideBarView/resources/dark/boolean.svg"
 				}
 			}
 		]

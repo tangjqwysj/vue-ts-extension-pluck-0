@@ -63,7 +63,7 @@ class QuickPick {
     })
   }
   async accept(selected) {
-    console.log(selected)
+    // console.log(selected)
     if (selected && selected.name !== this.quickPick.value) {
       selected = undefined
     }
