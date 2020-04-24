@@ -59,21 +59,21 @@
 			"view/item/context": [
 				{
 					"command": "extension.addFile",
-					"when": "view == treeView && viewItem == dirType",
+					"when": "view == treeView || view == remoteResource && viewItem == dirType",
 					"group": "inline"
 				},
 				{
 					"command": "extension.idDeploy",
-					"when": "view == treeView && viewItem == dirType",
+					"when": "view == treeView || view == remoteResource && viewItem == dirType",
 					"group": "inline"
 				},
 				{
 					"command": "extension.delete",
-					"when": "view == treeView && viewItem == fileType||viewItem == dirType"
+					"when": "view == treeView || view == remoteResource && viewItem == fileType||viewItem == dirType"
 				},
 				{
 					"command": "extension.rename",
-					"when": "view == treeView && viewItem == fileType||viewItem == dirType"
+					"when": "view == treeView || view == remoteResource && viewItem == fileType||viewItem == dirType"
 				}
 			],
 			"editor/title": [

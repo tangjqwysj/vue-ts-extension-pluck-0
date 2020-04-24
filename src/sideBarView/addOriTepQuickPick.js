@@ -25,6 +25,7 @@ class QuickPick {
 
       this.accept(selected)
     })
+    this.quickPick.placeholder = '请输入api名称'
     this.quickPick.onDidChangeValue((value) => {
       this.changePath(value)
     })
@@ -88,9 +89,13 @@ class QuickPick {
     const uri = this.fm.getUri(filePath)
 
     try {
-      await this.fm.copy(path.join(__dirname, 'templateCode/todo'), uri.fsPath)
-      treeViewProvider.default.refresh()
-      return path.join(filePath, 'index.js')
+      if (filePath.match(/^[^\/\\\.]*$/)) {
+        await this.fm.copy(path.join(__dirname, 'templateCode/todo'), uri.fsPath)
+        treeViewProvider.default.refresh()
+        return path.join(filePath, 'index.js')
+      } else {
+        await vscode.window.showWarningMessage(`输入的${filePath}含有不合法字符，请重新输入正确的api名称`, { modal: true })
+      }
     }
     catch (e) {
       console.error(e)

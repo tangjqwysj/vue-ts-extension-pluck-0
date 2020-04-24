@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true })
 
 const vscode = require("vscode")
 const treeView = require("./sideBarView/treeView")
-const remoteTreeView = require('./sideBarView/remoteTreeView')
+// const remoteTreeView = require('./sideBarView/remoteTreeView')
 
 const addFileQuickPick = require("./sideBarView/addFileQuickPick")
 const addOriTepQuickPick = require('./sideBarView/addOriTepQuickPick')
@@ -21,12 +21,23 @@ async function getBasePath(mPath) {
 	}
 }
 
+function pathExists(p) {
+	try {
+		fs.accessSync(p)
+	}
+	catch (err) {
+		return false
+	}
+	return true
+}
+
 const searchList = []
 
-const treeViewProvider = new treeView.TreeViewProvider()
+const treeViewProvider = new treeView.TreeViewProvider('userCode')
 exports.default = treeViewProvider
 
-const remoteTreeViewProvider = new remoteTreeView.TreeViewProvider(searchList)
+const remoteTreeViewProvider = new treeView.TreeViewProvider('remoteCode')
+exports.remoteTreeViewProvider = remoteTreeViewProvider
 
 
 function activate(context) {
@@ -91,6 +102,19 @@ function activate(context) {
 		searchItem.scriptList = Object.assign({}, res.result.script[0].scriptCustom[0], { index: { scriptContent: res.result.script[0].scriptContent } })
 		console.log(searchItem)
 		searchList.push(searchItem)
+
+		try {
+			const dirname = path.join(__dirname, 'sideBarView', 'remoteCode', searchItem.apiName)
+			if (!pathExists(dirname)) {
+				fs.mkdirSync(dirname)
+				Object.keys(searchItem.scriptList).forEach((item) => {
+					fs.writeFileSync(path.join(dirname, item), searchItem.scriptList[item].scriptContent)
+				})
+			}
+		} catch (err) {
+			console.log(err)
+		}
+
 		vscode.window.registerTreeDataProvider('remoteResource', remoteTreeViewProvider)
 	}))
 
@@ -101,19 +125,23 @@ function activate(context) {
 		const isDir = fs.lstatSync(ele.des).isDirectory()
 		const str = isDir ? '文件夹' : '文件'
 
-		vscode.window.showInformationMessage(`是否确定要删除${str}"${ele.label}"`, '移动到回收站', '取消')
+		await vscode.window.showInformationMessage(`是否确定要删除${str}"${ele.label}"`, '移动到回收站', '取消')
 			.then(async function (select) {
 
 				if (select === '移动到回收站') {
 					if (!isDir) {
 						await fm.delete(base.path, { recursive: false })
 						if (vscode.window.activeTextEditor.document.uri.fsPath === base.path.fsPath)
-							vscode.commands.executeCommand('workbench.action.closeActiveEditor')
+							await vscode.commands.executeCommand('workbench.action.closeActiveEditor')
 					} else {
 						await fm.delete(base.path, { recursive: true })
 					}
-					treeViewProvider.refresh()
 
+					if (path.parse(base.path.fsPath).dir.includes('remoteCode')) {
+						remoteTreeViewProvider.refresh()
+					} else {
+						treeViewProvider.refresh()
+					}
 				} else {
 					// console.log(select)
 				}
@@ -126,16 +154,28 @@ function activate(context) {
 		const fm = new FileManager.default(base)
 		const dirname = path.dirname(ele.des)
 
-		vscode.window.showInputBox(
+		await vscode.window.showInputBox(
 			{
 				password: false,
 				ignoreFocusOut: false,
 				placeHolder: '随便输',
 				prompt: '输入',
 			}).then(async function (msg) {
-				const base_t = await getBasePath(path.join(dirname, msg))
-				await fm.rename(base.path, base_t.path, { overwrite: false })
-				treeViewProvider.refresh()
+				try {
+					if (!msg.endsWith('.js')) {
+						msg = msg + '.js'
+					}
+					const base_t = await getBasePath(path.join(dirname, msg))
+					await fm.rename(base.path, base_t.path, { overwrite: false })
+					if (path.parse(base.path.fsPath).dir.includes('remoteCode')) {
+						remoteTreeViewProvider.refresh()
+					} else {
+						treeViewProvider.refresh()
+					}
+
+				} catch (err) {
+					console.log(err)
+				}
 			})
 	}))
 

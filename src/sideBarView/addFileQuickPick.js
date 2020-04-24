@@ -24,6 +24,7 @@ class QuickPick {
             }
             this.accept(selected)
         })
+        this.quickPick.placeholder = '请输入js文件名'
         this.quickPick.onDidChangeValue((value) => {
             this.changePath(value)
         })
@@ -82,18 +83,32 @@ class QuickPick {
         }
     }
     async createNew() {
-        const filePath = this.quickPick.value
-        const uri = this.fm.getUri(filePath)
+        let filePath = this.quickPick.value
+        let uri = this.fm.getUri(filePath)
         try {
-            if (filePath.endsWith(path.sep)) {
-                await this.fm.createDirectory(uri)
-                treeViewProvider.default.refresh()
-                return undefined
-            }
-            else {
+            if (filePath.match(/^[^\/\\]*$/)) {
+                if (!filePath.endsWith('.js')) {
+                    // await vscode.window.showWarningMessage(`输入的${filePath}扩展名应为.js，请重新输入正确的文件名`, { modal: true })
+                    filePath = filePath + '.js'
+                    uri = this.fm.getUri(filePath)
+                }
+                // if (filePath.endsWith(path.sep)) {
+                //     await this.fm.createDirectory(uri)
+                //     treeViewProvider.default.refresh()
+                //     return undefined
+                // }
+                // else {
                 await this.fm.writeFile(uri, new Uint8Array(0), { create: true, overwrite: false })
-                treeViewProvider.default.refresh()
+                if(path.parse(uri.fsPath).dir.includes('remoteCode')){
+                    treeViewProvider.remoteTreeViewProvider.refresh()
+                }else{
+                    treeViewProvider.default.refresh()
+                }
                 return filePath
+                // }
+            } else {
+
+                await vscode.window.showWarningMessage(`输入的${filePath}含有不合法字符，请重新输入的文件名`, { modal: true })
             }
         }
         catch (e) {

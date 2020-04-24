@@ -5,11 +5,12 @@ const fs = require("fs")
 const path = require("path")
 
 // 固定文件夹
-const FIXED_Folder = 'userCode'
+// const this.dirPath = 'userCode'
 
 class TreeViewProvider {
-    constructor(workspaceRoot) {
-        this.workspaceRoot = workspaceRoot
+    constructor(path) {
+        // this.workspaceRoot = workspaceRoot
+        this.dirPath = path
         this._onDidChangeTreeData = new vscode.EventEmitter()
         this.onDidChangeTreeData = this._onDidChangeTreeData.event
     }
@@ -29,7 +30,7 @@ class TreeViewProvider {
         }
         else {
             // 点开activitybar，无操作，进入这里
-            const fixedFolderPath = path.join(__dirname, FIXED_Folder)
+            const fixedFolderPath = path.join(__dirname, this.dirPath)
             if (this.pathExists(fixedFolderPath)) {
                 return Promise.resolve(this.getTreeItemArray(fixedFolderPath))
             }

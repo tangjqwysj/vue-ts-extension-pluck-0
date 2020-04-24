@@ -82,7 +82,7 @@ class FileSystemProvider {
         const exists = await _exists(newUri.fsPath)
         if (exists) {
             if (!options.overwrite) {
-                vscode.window.showWarningMessage('指定的文件名称与同级文件重名。请指定其他名称。')
+                await vscode.window.showWarningMessage('指定的文件名称与同级文件重名，请指定其他名称', { modal: true })
                 throw vscode.FileSystemError.FileExists()
             }
             else {
@@ -98,10 +98,10 @@ class FileSystemProvider {
     copy(from, to) {
         const fromPath = path.resolve(from)
         let toPath = to
-        if (path.extname(toPath) && toPath.match(/^.*[^\/\\]+$/)) {
-            vscode.window.showInformationMessage('请输入文件夹路径')
-            return Promise.reject('请输入文件夹路径')
-        }
+        // if (path.extname(toPath) && toPath.match(/^.*[^\/\\]+$/)) {
+        //     vscode.window.showInformationMessage('请输入文件夹路径')
+        //     return Promise.reject('请输入文件夹路径')
+        // }
         toPath = path.resolve(toPath)
         function pathExists(p) {
             try {
@@ -171,7 +171,6 @@ function massageError(error) {
         return vscode.FileSystemError.FileIsADirectory()
     }
     if (error.code === 'EEXIST') {
-        vscode.window.showWarningMessage('指定的文件夹名称与同级文件重名。请指定其他名称。')
         return vscode.FileSystemError.FileExists()
     }
     if (error.code === 'EPERM' || error.code === 'EACCESS') {
