@@ -5,13 +5,12 @@ const vscode = require("vscode")
 const path = require("path")
 const FileManager = require("./FileManager")
 const Fuzzy_1 = require("./Fuzzy")
-const treeViewProvider = require('../extension')
 
 class QuickPick {
   constructor(base) {
     this.fm = new FileManager.default(base)
     this.oldPath = null
-    this.config = vscode.workspace.getConfiguration('simple-new-file')
+    this.config = vscode.workspace.getConfiguration('xx')
     this.items = []
     this.quickPick = vscode.window.createQuickPick()
     this.quickPick.onDidHide(() => this.quickPick.dispose())
@@ -90,8 +89,8 @@ class QuickPick {
 
     try {
       if (filePath.match(/^[^\/\\\.]*$/)) {
-        await this.fm.copy(path.join(__dirname, 'templateCode/todo'), uri.fsPath)
-        treeViewProvider.default.refresh()
+        await this.fm.copy(path.join(__dirname, 'templateCode', 'todo'), uri.fsPath)
+        await vscode.commands.executeCommand('extension.refreshLocal')
         return path.join(filePath, 'index.js')
       } else {
         await vscode.window.showWarningMessage(`输入的${filePath}含有不合法字符，请重新输入正确的api名称`, { modal: true })

@@ -46,8 +46,13 @@
 			],
 			"view/title": [
 				{
-					"command": "extension.refreshEntry",
+					"command": "extension.refreshLocal",
 					"when": "view == treeView",
+					"group": "navigation"
+				},
+				{
+					"command": "extension.refreshRemote",
+					"when": "view == remoteResource",
 					"group": "navigation"
 				},
 				{
@@ -59,21 +64,21 @@
 			"view/item/context": [
 				{
 					"command": "extension.addFile",
-					"when": "view == treeView || view == remoteResource && viewItem == dirType",
+					"when": "view == treeView && viewItem == dirType || view == remoteResource && viewItem == dirType",
 					"group": "inline"
 				},
 				{
 					"command": "extension.idDeploy",
-					"when": "view == treeView || view == remoteResource && viewItem == dirType",
+					"when": "view == treeView && viewItem == dirType || view == remoteResource && viewItem == dirType",
 					"group": "inline"
 				},
 				{
 					"command": "extension.delete",
-					"when": "view == treeView || view == remoteResource && viewItem == fileType||viewItem == dirType"
+					"when": "view == treeView || view == remoteResource"
 				},
 				{
 					"command": "extension.rename",
-					"when": "view == treeView || view == remoteResource && viewItem == fileType||viewItem == dirType"
+					"when": "view == treeView || view == remoteResource"
 				}
 			],
 			"editor/title": [
@@ -125,8 +130,16 @@
 				}
 			},
 			{
-				"command": "extension.refreshEntry",
-				"title": "Refresh",
+				"command": "extension.refreshLocal",
+				"title": "Refresh Local",
+				"icon": {
+					"light": "src/sideBarView/resources/light/refresh.svg",
+					"dark": "src/sideBarView/resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "extension.refreshRemote",
+				"title": "Refresh Remote",
 				"icon": {
 					"light": "src/sideBarView/resources/light/refresh.svg",
 					"dark": "src/sideBarView/resources/dark/refresh.svg"

@@ -4,9 +4,6 @@ const vscode = require("vscode")
 const fs = require("fs")
 const path = require("path")
 
-// 固定文件夹
-// const this.dirPath = 'userCode'
-
 class TreeViewProvider {
     constructor(path) {
         // this.workspaceRoot = workspaceRoot

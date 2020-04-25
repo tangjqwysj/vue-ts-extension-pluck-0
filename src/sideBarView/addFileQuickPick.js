@@ -5,13 +5,12 @@ const vscode = require("vscode")
 const path = require("path")
 const FileManager = require("./FileManager")
 const Fuzzy_1 = require("./Fuzzy")
-const treeViewProvider = require('../extension')
 
 class QuickPick {
     constructor(base) {
         this.fm = new FileManager.default(base)
         this.oldPath = null
-        this.config = vscode.workspace.getConfiguration('simple-new-file')
+        this.config = vscode.workspace.getConfiguration('xx')
         this.items = []
         this.quickPick = vscode.window.createQuickPick()
         this.quickPick.onDidHide(() => this.quickPick.dispose())
@@ -100,9 +99,9 @@ class QuickPick {
                 // else {
                 await this.fm.writeFile(uri, new Uint8Array(0), { create: true, overwrite: false })
                 if(path.parse(uri.fsPath).dir.includes('remoteCode')){
-                    treeViewProvider.remoteTreeViewProvider.refresh()
+                    await vscode.commands.executeCommand('extension.refreshRemote')
                 }else{
-                    treeViewProvider.default.refresh()
+                    await vscode.commands.executeCommand('extension.refreshLocal')
                 }
                 return filePath
                 // }

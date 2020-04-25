@@ -33,4 +33,12 @@ class FileManager extends FileSystemProvider.default {
     }
 }
 exports.default = FileManager
-//# sourceMappingURL=FileManager.js.map
+
+async function getBasePath(mPath) {
+    return {
+        path: vscode.Uri.file(mPath),
+        type: 'file'
+    }
+}
+
+exports.getBasePath = getBasePath
