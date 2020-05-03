@@ -1,6 +1,7 @@
 const vscode = require("vscode")
 const path = require("path")
 const fs = require('fs')
+const apiList=require('../utils/store').apiList
 
 function deploy(context) {
   context.subscriptions.push(vscode.commands.registerCommand('extension.idDeploy', async (ele) => {
@@ -12,6 +13,7 @@ function deploy(context) {
         }
       ]
     }
+    console.log(apiList)
     //不考虑多层目录结构
     let fileList = []
     try {
@@ -30,7 +32,7 @@ function deploy(context) {
         }
       })
     }
-    console.log(retObj)
+    // console.log(retObj)
   }))
 
 }

@@ -84,6 +84,10 @@ class QuickPick {
     async createNew() {
         let filePath = this.quickPick.value
         let uri = this.fm.getUri(filePath)
+        if (filePath === '') {
+            await vscode.window.showWarningMessage('输入不能为空', { modal: true })
+            return ''
+        }
         try {
             if (filePath.match(/^[^\/\\]*$/)) {
                 if (!filePath.endsWith('.js')) {
@@ -98,9 +102,9 @@ class QuickPick {
                 // }
                 // else {
                 await this.fm.writeFile(uri, new Uint8Array(0), { create: true, overwrite: false })
-                if(path.parse(uri.fsPath).dir.includes('remoteCode')){
+                if (path.parse(uri.fsPath).dir.includes('remoteCode')) {
                     await vscode.commands.executeCommand('extension.refreshRemote')
-                }else{
+                } else {
                     await vscode.commands.executeCommand('extension.refreshLocal')
                 }
                 return filePath

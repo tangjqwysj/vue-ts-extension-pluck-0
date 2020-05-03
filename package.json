@@ -74,11 +74,11 @@
 				},
 				{
 					"command": "extension.delete",
-					"when": "view == treeView || view == remoteResource"
+					"when": "view == treeView || view == remoteResource && viewItem == fileType"
 				},
 				{
 					"command": "extension.rename",
-					"when": "view == treeView || view == remoteResource"
+					"when": "view == treeView || view == remoteResource && viewItem == fileType"
 				}
 			],
 			"editor/title": [
@@ -89,6 +89,10 @@
 			]
 		},
 		"commands": [
+			{
+				"command": "extension.remoteLogin",
+				"title": "Remote Login"
+			},
 			{
 				"command": "extension.showFileContent",
 				"title": "Show File Content"

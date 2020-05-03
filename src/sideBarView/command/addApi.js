@@ -5,7 +5,6 @@ const addOriTepQuickPick = require('../addOriTepQuickPick')
 
 function addApi(context) {
   context.subscriptions.push(vscode.commands.registerCommand('extension.addOriginDir', async () => {
-
     const base = await getBasePath(path.join(__dirname, '..', 'userCode'))
 		if (!base) {
       return

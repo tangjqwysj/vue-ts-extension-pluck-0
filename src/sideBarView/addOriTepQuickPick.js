@@ -86,6 +86,10 @@ class QuickPick {
   async createNew() {
     const filePath = this.quickPick.value
     const uri = this.fm.getUri(filePath)
+    if (filePath === '') {
+      vscode.window.showWarningMessage('输入不能为空', { modal: true })
+      return ''
+    }
 
     try {
       if (filePath.match(/^[^\/\\\.]*$/)) {

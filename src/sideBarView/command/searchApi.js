@@ -2,19 +2,20 @@ const vscode = require("vscode")
 const path = require("path")
 const fs = require('fs')
 const file = require('../utils/file')
-const treeView = require("../treeView")
-
-const remoteTreeViewProvider = new treeView.TreeViewProvider('remoteCode')
+const apiList = require('../utils/store').apiList
+const rimraf = require('rimraf')
+const cookie = require('../utils/store').cookie
 
 function searchApi(context) {
-  context.subscriptions.push(vscode.commands.registerCommand('extension.searchApi', function () {
+  context.subscriptions.push(vscode.commands.registerCommand('extension.searchApi', async function () {
     const res = {
       code: 200,
       message: 'ok',
       result: {
         api: {
-          apiName: 'dudu_3',
-          apiMethod: 'get'
+          apiName: 'dudu_4',
+          apiMethod: 'get',
+          appName: 'dada'
         },
         script: [
           {
@@ -41,24 +42,47 @@ function searchApi(context) {
       }
     }
 
+    if (!cookie.token) {
+      vscode.window.showWarningMessage('请先登录哟')
+      return false
+    }
+
     const searchItem = {}
-    searchItem.apiName = res.result.api.apiName
+    searchItem.api = res.result.api
     searchItem.scriptList = Object.assign({}, res.result.script[0].scriptCustom[0], { index: { scriptContent: res.result.script[0].scriptContent } })
 
+    const appName = searchItem.api.appName
+
+    if (apiList.length) {
+      const preAppInfo = apiList[apiList.length - 1]
+      const preAppName = preAppInfo.api.appName
+      if (preAppName !== appName) {
+        const rPath = path.join(__dirname, '..', 'remoteCode')
+        try {
+          rimraf.sync(rPath)
+          fs.mkdirSync(rPath)
+        } catch (err) {
+          return false
+        }
+        await vscode.commands.executeCommand('extension.refreshRemote')
+      }
+    }
+
     try {
-      const dirname = path.join(__dirname, '..', 'remoteCode', searchItem.apiName)
+      const dirname = path.join(__dirname, '..', 'remoteCode', searchItem.api.apiName)
       if (!file.isPathExists(dirname)) {
         fs.mkdirSync(dirname)
         Object.keys(searchItem.scriptList).forEach((item) => {
-          fs.writeFileSync(path.join(dirname, item), searchItem.scriptList[item].scriptContent)
+          fs.writeFileSync(path.join(dirname, item + '.js'), searchItem.scriptList[item].scriptContent)
         })
+        apiList.push(searchItem)
+        vscode.commands.executeCommand('extension.refreshRemote')
+      } else {
+        vscode.window.showWarningMessage(`api ${searchItem.api.apiName} 已存在`, { modal: true })
       }
     } catch (err) {
       console.log(err)
     }
-
-    vscode.window.registerTreeDataProvider('remoteResource', remoteTreeViewProvider)
-    vscode.commands.registerCommand('extension.refreshRemote', () => remoteTreeViewProvider.refresh())
   }))
 }
 
