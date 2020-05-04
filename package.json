@@ -156,6 +156,10 @@
 					"light": "src/sideBarView/resources/light/boolean.svg",
 					"dark": "src/sideBarView/resources/dark/boolean.svg"
 				}
+			},
+			{
+				"command": "extension.openLoginWebview",
+				"title": "Open Login Webview"
 			}
 		]
 	},

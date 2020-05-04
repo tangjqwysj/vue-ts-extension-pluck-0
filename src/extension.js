@@ -14,6 +14,7 @@ const addApiFile = require('./sideBarView/command/addApiFile')
 const renameFile = require('./sideBarView/command/renameFile')
 const remoteLogin = require('./sideBarView/command/remoteLogin')
 const initProject = require('./sideBarView/initProject')
+const loginView=require('./sideBarView/loginWebview')
 
 const treeViewProvider = new treeView.TreeViewProvider('userCode')
 const remoteTreeViewProvider = new remoteTreeView.TreeViewProvider('remoteCode')
@@ -45,6 +46,7 @@ function activate(context) {
 	deleteApi.deleteApi(context)
 	renameFile.renameFile(context)
 	remoteLogin.remoteLogin(context)
+	loginView(context)
 
 	initProject.initProject()
 }
