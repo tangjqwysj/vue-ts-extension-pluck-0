@@ -9,8 +9,11 @@ function initProject() {
     return false
   }
   try {
-    rimraf.sync(rPath)
-    fs.mkdirSync(rPath)
+    fileList.forEach((v) => {
+      rimraf.sync(path.join(rPath, v))
+    })
+    // rimraf.sync(rPath)
+    // fs.mkdirSync(rPath)
   } catch (err) {
     return false
   }

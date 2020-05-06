@@ -16,6 +16,8 @@ const remoteLogin = require('./sideBarView/command/remoteLogin')
 const initProject = require('./sideBarView/initProject')
 const loginView=require('./sideBarView/loginWebview')
 
+initProject.initProject()
+
 const treeViewProvider = new treeView.TreeViewProvider('userCode')
 const remoteTreeViewProvider = new remoteTreeView.TreeViewProvider('remoteCode')
 
@@ -48,7 +50,6 @@ function activate(context) {
 	remoteLogin.remoteLogin(context)
 	loginView(context)
 
-	initProject.initProject()
 }
 
 exports.activate = activate

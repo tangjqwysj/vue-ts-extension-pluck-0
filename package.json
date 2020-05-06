@@ -3,6 +3,11 @@
 	"displayName": "vue-ts-view",
 	"description": "xxx",
 	"version": "0.0.1",
+	"publisher": "tangjq",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tangjqwysj/vue-ts-livedata-0"
+	},
 	"engines": {
 		"vscode": "^1.43.0"
 	},
