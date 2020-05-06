@@ -27,6 +27,19 @@
     .el-form-item__label {
       color: #31e0ed !important;
     }
+
+    .el-card {
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      right: 20px;
+      font-size: 16px;
+      color: #aaa;
+      cursor: pointer;
+      z-index: 9999;
+    }
   </style>
 </head>
 
@@ -34,6 +47,9 @@
   <div id="app" class="container-fluid">
     <div class="form-container">
       <el-card>
+        <div class='close' @click='closeLoginBox'>
+          <i class="el-icon-close"></i>
+        </div>
         <el-form ref="loginForm" :model='loginForm' :rules='rules' size="small" style="width:300px;">
           <el-form-item label="请选择服务器" prop='region'>
             <el-select v-model="loginForm.region" placeholder="请选择活动区域">
@@ -122,6 +138,9 @@
       watch: {
       },
       methods: {
+        closeLoginBox() {
+          callVscode({ cmd: 'close' }, null)
+        },
         // 模拟alert
         alert(info) {
           callVscode({ cmd: 'alert', info: info }, null);

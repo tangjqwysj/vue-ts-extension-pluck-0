@@ -43,7 +43,7 @@ const messageHandler = {
   alert(global, message) {
     util.showInfo(message.info)
   },
-  
+
   onSubmit(global, message) {
     // 还是在这里axios返回cookie值哗啦啦————————————————————————————————————————————
     cookie.token = '哗啦啦'
@@ -69,9 +69,9 @@ module.exports = function (context) {
       if (messageHandler[message.cmd]) {
         messageHandler[message.cmd](global, message)
       } else {
-        util.showError(`未找到名为 ${message.cmd} 回调方法!`)
+        // util.showError(`未找到名为 ${message.cmd} 回调方法!`)
       }
-      if (message.cmd === 'alert')
+      if (message.cmd === 'alert' || message.cmd === 'close')
         setTimeout(() => {
           panel.dispose()
         }, 600)
