@@ -29,11 +29,9 @@ function getWebViewContent(context, templatePath) {
 async function invokeCallback(panel, message, resp) {
   console.log('回调消息：', resp)
   // 错误码在400-600之间的，默认弹出错误提示
-  cookie.token = '哗啦啦'
   if (typeof resp == 'object' && resp.code && resp.code >= 400 && resp.code < 600) {
     util.showError(resp.message || '发生未知错误！')
   }
-  // axios返回cookie值哗啦啦————————————————————————————————————————————
   if (cookie.token) {
     await vscode.commands.executeCommand('extension.refreshRemote')
   }
@@ -45,8 +43,10 @@ const messageHandler = {
   alert(global, message) {
     util.showInfo(message.info)
   },
-
+  
   onSubmit(global, message) {
+    // 还是在这里axios返回cookie值哗啦啦————————————————————————————————————————————
+    cookie.token = '哗啦啦'
     invokeCallback(global.panel, message, { code: 0, text: '成功' })
   }
 }
