@@ -3,8 +3,10 @@
 Object.defineProperty(exports, "__esModule", { value: true })
 const vscode = require("vscode")
 const path = require("path")
+const fs = require('fs')
 const FileManager = require("./FileManager")
 const Fuzzy_1 = require("./Fuzzy")
+const TemplateService = require('./templateService')
 
 class QuickPick {
   constructor(base) {
@@ -93,7 +95,15 @@ class QuickPick {
 
     try {
       if (filePath.match(/^[^\/\\\.]*$/)) {
-        await this.fm.copy(path.join(__dirname, 'templateCode', 'todo'), uri.fsPath)
+        const templatePath = path.join(__dirname, 'templateCode', 'todo')
+        await this.fm.copy(templatePath, uri.fsPath)
+        
+        const templateService = new TemplateService.TemplateService(path.resolve(vscode.workspace.rootPath, 'template.yml'))
+        const functionName = fs.readdirSync(templatePath)
+        if (!await templateService.addApi(filePath, functionName)) {
+          return
+        }
+        
         await vscode.commands.executeCommand('extension.refreshLocal')
         return path.join(filePath, 'index.js')
       } else {

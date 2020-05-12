@@ -16,18 +16,18 @@ const remoteLogin = require('./sideBarView/command/remoteLogin')
 const initProject = require('./sideBarView/initProject')
 const loginView=require('./sideBarView/loginWebview')
 
-initProject.initProject()
 
-const treeViewProvider = new treeView.TreeViewProvider('userCode')
+const treeViewProvider = new treeView.TreeViewProvider(vscode.workspace.rootPath)
 const remoteTreeViewProvider = new remoteTreeView.TreeViewProvider('remoteCode')
+initProject.initProject()
 
 function activate(context) {
 	vscode.window.registerTreeDataProvider('treeView', treeViewProvider)
 	vscode.commands.registerCommand('extension.refreshLocal', () => treeViewProvider.refresh())
-
+	
 	vscode.window.registerTreeDataProvider('remoteResource', remoteTreeViewProvider)
 	vscode.commands.registerCommand('extension.refreshRemote', () => remoteTreeViewProvider.refresh())
-
+	
 	vscode.commands.registerCommand('extension.showFileContent', function (path) {
 		vscode.window.showTextDocument(vscode.Uri.file(path), { preview: false }).then(() => {
 		}, (error) => {
@@ -40,6 +40,7 @@ function activate(context) {
 			vscode.window.showWarningMessage(error.message)
 		})
 	})
+	
 
 	addApi.addApi(context)
 	addApiFile.addApiFile(context)
@@ -49,7 +50,7 @@ function activate(context) {
 	renameFile.renameFile(context)
 	remoteLogin.remoteLogin(context)
 	loginView(context)
-
+	vscode.commands.executeCommand('extension.openLoginWebview')
 }
 
 exports.activate = activate

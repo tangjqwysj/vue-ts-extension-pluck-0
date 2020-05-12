@@ -5,6 +5,8 @@ const vscode = require("vscode")
 const path = require("path")
 const FileManager = require("./FileManager")
 const Fuzzy_1 = require("./Fuzzy")
+const TemplateService = require('./templateService')
+const yaml = require('js-yaml')
 
 class QuickPick {
     constructor(base) {
@@ -91,20 +93,30 @@ class QuickPick {
         try {
             if (filePath.match(/^[^\/\\]*$/)) {
                 if (!filePath.endsWith('.js')) {
-                    // await vscode.window.showWarningMessage(`输入的${filePath}扩展名应为.js，请重新输入正确的文件名`, { modal: true })
                     filePath = filePath + '.js'
                     uri = this.fm.getUri(filePath)
                 }
-                // if (filePath.endsWith(path.sep)) {
-                //     await this.fm.createDirectory(uri)
-                //     treeViewProvider.default.refresh()
-                //     return undefined
-                // }
-                // else {
+
                 await this.fm.writeFile(uri, new Uint8Array(0), { create: true, overwrite: false })
                 if (path.parse(uri.fsPath).dir.includes('remoteCode')) {
                     await vscode.commands.executeCommand('extension.refreshRemote')
                 } else {
+                    const templatePath = path.resolve(vscode.workspace.rootPath, 'template.yml')
+                    const templateService = new TemplateService.TemplateService(templatePath)
+                    const tpl = await templateService.getTemplateDefinition()
+                    const dirname = path.dirname(uri.fsPath)
+                    const basename = path.basename(uri.fsPath)
+                    const temp = dirname.split(path.sep)
+                    const dirN = temp[temp.length - 1]
+                    tpl.Resources[dirN][basename] = {
+                        Type: '倩女::杏花春雨::Function',
+                        Properties: {
+                            Description: `This is ${dirN} 甲鱼的 ${basename} 装备`
+                        }
+                    }
+                    const tplContent = yaml.dump(tpl)
+                    templateService.writeTemplate(tplContent)
+
                     await vscode.commands.executeCommand('extension.refreshLocal')
                 }
                 return filePath

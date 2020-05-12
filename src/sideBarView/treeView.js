@@ -1,13 +1,13 @@
 "use strict"
 Object.defineProperty(exports, "__esModule", { value: true })
 const vscode = require("vscode")
-const fs = require("fs")
 const path = require("path")
+const TemplateService = require('./templateService')
+const file = require('./utils/file')
 
 class TreeViewProvider {
-    constructor(path) {
-        // this.workspaceRoot = workspaceRoot
-        this.dirPath = path
+    constructor(workspaceRoot) {
+        this.workspaceRoot = workspaceRoot
         this._onDidChangeTreeData = new vscode.EventEmitter()
         this.onDidChangeTreeData = this._onDidChangeTreeData.event
     }
@@ -21,61 +21,75 @@ class TreeViewProvider {
     }
 
     getChildren(element) {
-        // console.log(element)
+        if (!this.workspaceRoot) {
+            vscode.window.showInformationMessage('No template.yml in empty workspace')
+            return Promise.resolve([])
+        }
+        const templatePath = this.getTemplateFile()
         if (element) {
-            return Promise.resolve(this.getTreeItemArray(element.des))
+            return Promise.resolve(this.getTreeItemFunc(templatePath, element.label))
         }
         else {
             // 点开activitybar，无操作，进入这里
-            const fixedFolderPath = path.join(__dirname, this.dirPath)
-            if (this.pathExists(fixedFolderPath)) {
-                return Promise.resolve(this.getTreeItemArray(fixedFolderPath))
+            if (templatePath) {
+                return Promise.resolve(this.getTreeItemApi(templatePath))
             }
             else {
-                vscode.window.showInformationMessage('There is no such path')
+                vscode.window.showInformationMessage('There is no template.yml')
                 return Promise.resolve([])
             }
         }
     }
-
-    getTreeItemArray(dirPath) {
-        const toDep = (moduleName) => {
-            const pathMy = path.join(dirPath, moduleName)
-            if (this.pathExists(pathMy)) {
-                if (!fs.lstatSync(pathMy).isDirectory()) {
-                    return new TreeItemNode(moduleName, vscode.TreeItemCollapsibleState.None, pathMy, 'fileType', {
-                        command: 'extension.showFileContent',
-                        arguments: [
-                            pathMy
-                        ]
-                    })
-                } else {
-                    // console.log('pathMy:'+JSON.stringify(pathMy,null,2))
-                    return new TreeItemNode(moduleName, vscode.TreeItemCollapsibleState.Expanded, pathMy, 'dirType', {
-                        command: 'extension.addFile',
-                        arguments: [
-                            pathMy
-                        ]
-                    })
-                }
-            }
+    getTemplateFile() {
+        const templatePath = path.resolve(this.workspaceRoot, 'template.yml')
+        if (file.isPathExists(templatePath)) {
+            return templatePath
         }
-        if (this.pathExists(dirPath) && fs.lstatSync(dirPath).isDirectory()) {
-            const pathStringArray = fs.readdirSync(dirPath)
-            return pathStringArray ? pathStringArray.map(dep => toDep(dep)) : []
+        return ''
+    }
+    async getTreeItemFunc(templatePath, label) {
+        const templateService = new TemplateService.TemplateService(templatePath)
+        const tpl = await templateService.getTemplateDefinition()
+        const func = Object.keys(tpl.Resources[label]).filter(v => {
+            if (tpl.Resources[label][v].Type && tpl.Resources[label][v].Type === '倩女::杏花春雨::Function') {
+                return v
+            }
+        })
+        if (func.length) {
+            return func.map(v => {
+                const funcPath = path.resolve(vscode.workspace.rootPath, 'userCode', label, v)
+                return new TreeItemNode(v, vscode.TreeItemCollapsibleState.None, funcPath, 'fileType', {
+                    command: 'extension.showFileContent',
+                    arguments: [
+                        funcPath
+                    ]
+                })
+            })
         } else {
             return []
         }
     }
-
-    pathExists(p) {
-        try {
-            fs.accessSync(p)
+    async getTreeItemApi(templatePath) {
+        const templateService = new TemplateService.TemplateService(templatePath)
+        const tpl = await templateService.getTemplateDefinition()
+        const api = Object.keys(tpl.Resources).filter((v) => {
+            if (tpl.Resources[v].Type === '倩女::杏花春雨::Api') {
+                return v
+            }
+        })
+        if (api.length) {
+            return api.map(v => {
+                const apiPath = path.resolve(vscode.workspace.rootPath, 'userCode', v)
+                return new TreeItemNode(v, vscode.TreeItemCollapsibleState.Expanded, apiPath, 'dirType', {
+                    command: 'extension.addFile',
+                    arguments: [
+                        apiPath
+                    ]
+                })
+            })
+        } else {
+            return []
         }
-        catch (err) {
-            return false
-        }
-        return true
     }
 }
 exports.TreeViewProvider = TreeViewProvider

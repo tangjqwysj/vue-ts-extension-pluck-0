@@ -28,7 +28,7 @@ class TreeViewProvider {
     if (!cookie.token) {
       return Promise.resolve([new LoginNode('因为太怕痛就全点满防御了', vscode.TreeItemCollapsibleState.None, { command: 'extension.remoteLogin' })])
     }
-    // console.log(element)
+    console.log('apiList:'+JSON.stringify(apiList,null,2))
     if (element) {
       return Promise.resolve(this.getTreeItemArray(element.des, element.label))
     }
@@ -52,7 +52,7 @@ class TreeViewProvider {
         if (!fs.lstatSync(pathMy).isDirectory()) {
 
           let fileType = 'fileType'
-
+          //新加入的文件apiList.scriptList里面没有
           const scriptList = apiList.map((v, i) => {
             if (v.api.apiName === label) {
               return v.scriptList

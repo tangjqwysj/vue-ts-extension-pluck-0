@@ -67,7 +67,7 @@ function searchApi(context) {
         await vscode.commands.executeCommand('extension.refreshRemote')
       }
     }
-
+    
     try {
       const dirname = path.join(__dirname, '..', 'remoteCode', searchItem.api.apiName)
       if (!file.isPathExists(dirname)) {
@@ -76,6 +76,7 @@ function searchApi(context) {
           fs.writeFileSync(path.join(dirname, item + '.js'), searchItem.scriptList[item].scriptContent)
         })
         apiList.push(searchItem)
+        // console.log('apiList:' + JSON.stringify(apiList, null, 2))
         vscode.commands.executeCommand('extension.refreshRemote')
       } else {
         vscode.window.showWarningMessage(`api ${searchItem.api.apiName} 已存在`, { modal: true })
