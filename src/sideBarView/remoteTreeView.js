@@ -24,8 +24,9 @@ class TreeViewProvider {
     return element
   }
 
-  getChildren(element) {
+  async getChildren(element) {
     if (!cookie.token) {
+      await vscode.commands.executeCommand('extension.openLoginWebview')
       return Promise.resolve([new LoginNode('因为太怕痛就全点满防御了', vscode.TreeItemCollapsibleState.None, { command: 'extension.remoteLogin' })])
     }
     console.log('apiList:'+JSON.stringify(apiList,null,2))

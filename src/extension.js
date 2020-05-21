@@ -50,7 +50,6 @@ function activate(context) {
 	renameFile.renameFile(context)
 	remoteLogin.remoteLogin(context)
 	loginView(context)
-	vscode.commands.executeCommand('extension.openLoginWebview')
 }
 
 exports.activate = activate
